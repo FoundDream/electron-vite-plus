@@ -1,0 +1,9 @@
+{
+  "name": "electron-vite-plus-basic-fixture",
+  "private": true,
+  "type": "module",
+  "main": "./out/main/index.js",
+  "dependencies": {
+    "nanoid": "^5.1.6"
+  }
+}

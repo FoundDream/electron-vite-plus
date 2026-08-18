@@ -1,0 +1,74 @@
+{
+  "name": "electron-vite-plus",
+  "version": "0.1.0-alpha.0",
+  "description": "Electron build tooling powered by Vite+",
+  "keywords": [
+    "build-tool",
+    "desktop",
+    "electron",
+    "vite",
+    "vite-plus"
+  ],
+  "license": "MIT",
+  "bin": {
+    "electron-vite-plus": "./dist/cli.mjs",
+    "evp": "./dist/cli.mjs"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "build:all": "npm run build && npm run build --workspace=create-electron-vite-plus",
+    "check": "vp check",
+    "test": "vp test run",
+    "test:watch": "vp test",
+    "smoke:build": "node dist/cli.mjs build tests/fixtures/basic",
+    "smoke:runtime": "cross-env EVP_SMOKE_TEST=1 node dist/cli.mjs preview tests/fixtures/basic --skip-build"
+  },
+  "dependencies": {
+    "chokidar": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.0.5",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "cross-env": "^10.1.0",
+    "electron": "^43.4.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "typescript": "^5.9.3",
+    "vite-plus": "^0.2.9",
+    "vue": "^3.5.41"
+  },
+  "peerDependencies": {
+    "electron": ">=32",
+    "vite-plus": ">=0.2.0 <1"
+  },
+  "peerDependenciesMeta": {
+    "electron": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": "^20.19.0 || ^22.18.0 || >=24.11.0"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "electron-vite-plus-react-fixture",
+  "private": true,
+  "type": "module",
+  "main": "./out/main/index.js",
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  }
+}

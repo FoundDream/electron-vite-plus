@@ -1,0 +1,9 @@
+{
+  "name": "electron-vite-plus-vue-fixture",
+  "private": true,
+  "type": "module",
+  "main": "./out/main/index.js",
+  "dependencies": {
+    "vue": "^3.5.41"
+  }
+}

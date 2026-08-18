@@ -1,0 +1,31 @@
+name: Bug report
+description: Report a reproducible electron-vite-plus problem
+title: "[bug]: "
+labels: [bug]
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Link a minimal repository or provide exact reproduction steps.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: electron-vite-plus, Vite+, Electron, Node.js, and operating system.
+    validations:
+      required: true

@@ -1,0 +1,41 @@
+{
+  "name": "create-electron-vite-plus",
+  "version": "0.1.0-alpha.0",
+  "description": "Create an Electron application powered by electron-vite-plus and Vite+",
+  "keywords": [
+    "create",
+    "electron",
+    "scaffold",
+    "vite-plus"
+  ],
+  "license": "MIT",
+  "bin": {
+    "create-electron-vite-plus": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "vite-plus": "^0.2.9"
+  },
+  "engines": {
+    "node": "^20.19.0 || ^22.18.0 || >=24.11.0"
+  }
+}

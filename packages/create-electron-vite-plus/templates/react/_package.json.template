@@ -1,0 +1,39 @@
+{
+  "name": "electron-vite-plus-app",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite-plus dev",
+    "build": "electron-vite-plus build",
+    "preview": "electron-vite-plus preview",
+    "check": "vp check"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.5",
+    "electron": "^43.4.0",
+    "electron-vite-plus": "^0.1.0-alpha.0",
+    "typescript": "^5.9.3",
+    "vite": "npm:@voidzero-dev/vite-plus-core@0.2.9",
+    "vite-plus": "0.2.9"
+  },
+  "packageManager": "pnpm@10.34.0",
+  "pnpm": {
+    "overrides": {
+      "vite": "npm:@voidzero-dev/vite-plus-core@0.2.9"
+    },
+    "peerDependencyRules": {
+      "allowAny": [
+        "vite"
+      ]
+    }
+  }
+}
