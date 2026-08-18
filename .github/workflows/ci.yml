@@ -18,12 +18,16 @@ jobs:
         include:
           - os: ubuntu-latest
             node: 20.19.0
+            package_build: false
           - os: ubuntu-latest
             node: 22.18.0
+            package_build: true
           - os: macos-latest
             node: 24.11.0
+            package_build: true
           - os: windows-latest
             node: 24.11.0
+            package_build: true
 
     steps:
       - uses: actions/checkout@v7
@@ -36,10 +40,23 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm test
-      - run: npm run build:all
-      - run: npm run smoke:build
-      - run: npm pack --dry-run --json
-      - run: npm pack --workspace=create-electron-vite-plus --dry-run --json
+
+      # Vite+ pack currently uses Promise.withResolvers, which is unavailable in Node 20.
+      - name: Build packages
+        if: matrix.package_build
+        run: npm run build:all
+
+      - name: Smoke test packaged CLI
+        if: matrix.package_build
+        run: npm run smoke:build
+
+      - name: Inspect core package
+        if: matrix.package_build
+        run: npm pack --dry-run --json
+
+      - name: Inspect project creator package
+        if: matrix.package_build
+        run: npm pack --workspace=create-electron-vite-plus --dry-run --json
 
       - name: Electron runtime smoke test
         if: runner.os == 'macOS'
