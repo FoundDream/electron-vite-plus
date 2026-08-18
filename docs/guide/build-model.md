@@ -1,0 +1,75 @@
+# How the build works
+
+An Electron application is not one bundle. It is a coordinated set of programs with different runtime constraints. electron-vite-plus resolves one configuration into three target-specific Vite builds.
+
+## Target matrix
+
+| Target   | Runtime                   | Default source            | Default output  | Default format                                |
+| -------- | ------------------------- | ------------------------- | --------------- | --------------------------------------------- |
+| Main     | Node.js + Electron        | `src/main/index.*`        | `out/main/`     | `es` when the package is ESM, otherwise `cjs` |
+| Preload  | Electron isolated context | `src/preload/index.*`     | `out/preload/`  | `cjs`                                         |
+| Renderer | Chromium                  | `src/renderer/index.html` | `out/renderer/` | Vite web build                                |
+
+Entry discovery checks TypeScript and JavaScript variants of `index` and the target name. Explicit `entry` values always win.
+
+## Main and preload
+
+Both Node-oriented targets use a server-side Vite build with a `node20` target. They keep source maps in development, skip minification by default, and do not copy a public directory.
+
+electron-vite-plus always externalizes:
+
+- the `electron` package and subpaths;
+- Node.js built-in modules, including `node:` specifiers.
+
+Application dependencies are externalized by default so native and runtime-sensitive modules remain available to Electron as installed packages. You can change that behavior per target.
+
+```ts
+electron: {
+  main: {
+    externalize: {
+      include: ["runtime-only-package"],
+      exclude: ["bundle-this-package"],
+    },
+  },
+}
+```
+
+## Renderer
+
+The renderer starts from the non-Vite+ fields in the top-level configuration, then merges `electron.renderer` over them. This means familiar Vite plugins and web options stay where ecosystem tools expect them.
+
+```ts
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: { "@ui": "/src/renderer/src" },
+  },
+  electron: {
+    renderer: {
+      root: "src/renderer",
+      // Renderer-only options override top-level Vite options.
+      build: { sourcemap: true },
+    },
+  },
+});
+```
+
+The renderer base defaults to `./`, making its asset URLs suitable for Electron's file-based production load.
+
+## Development lifecycle
+
+The `dev` command starts watched builds for main and preload, starts the renderer dev server, then launches the Electron executable installed by the application.
+
+```text
+main change     → rebuild main    → restart Electron
+preload change  → rebuild preload → full renderer reload
+renderer change → Vite HMR        → update the web surface
+```
+
+Restarts are briefly debounced so a single source edit does not produce a burst of Electron processes. On shutdown, electron-vite-plus closes file watchers, the dev server, and the Electron child process.
+
+## Production and preview
+
+`build` runs enabled targets and writes them under the shared output directory. `preview` performs that build unless `--skip-build` is set, then launches Electron using the application's package root.
+
+This preview is a runtime check of the compiled application. It is not an installer, signer, or distributable-package preview.

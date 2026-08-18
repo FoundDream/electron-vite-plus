@@ -2,6 +2,8 @@
 
 Electron build tooling powered by Vite+.
 
+[Documentation](https://founddream.github.io/electron-vite-plus/) · [Getting started](https://founddream.github.io/electron-vite-plus/guide/getting-started) · [Configuration](https://founddream.github.io/electron-vite-plus/guide/configuration)
+
 > Experimental Alpha. This project is independent from Electron, electron-vite,
 > and VoidZero. It is inspired by the workflow of
 > [electron-vite](https://github.com/alex8088/electron-vite) and uses the public

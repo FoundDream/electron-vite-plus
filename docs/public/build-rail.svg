@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" role="img" aria-labelledby="title description">
+  <title id="title">electron-vite-plus build rail</title>
+  <desc id="description">One Vite configuration feeds main, preload, and renderer build targets.</desc>
+  <rect width="720" height="520" rx="22" fill="#17201f"/>
+  <g opacity=".12" stroke="#f7f4ed">
+    <path d="M0 65h720M0 130h720M0 195h720M0 260h720M0 325h720M0 390h720M0 455h720"/>
+    <path d="M72 0v520M144 0v520M216 0v520M288 0v520M360 0v520M432 0v520M504 0v520M576 0v520M648 0v520"/>
+  </g>
+  <rect x="68" y="62" width="584" height="78" rx="8" fill="#f7f4ed"/>
+  <text x="104" y="110" fill="#17201f" font-family="ui-monospace, monospace" font-size="23" font-weight="700">vite.config.ts</text>
+  <path d="M360 140v72M162 212h396" fill="none" stroke="#f35b2b" stroke-width="6" stroke-linecap="square"/>
+  <path d="M162 212v44M360 212v44M558 212v44" stroke="#f35b2b" stroke-width="6"/>
+  <g font-family="ui-monospace, monospace">
+    <rect x="68" y="256" width="188" height="142" rx="8" fill="#f35b2b"/>
+    <text x="96" y="307" fill="#17201f" font-size="14" font-weight="700">01 / NODE</text>
+    <text x="96" y="351" fill="#17201f" font-size="24" font-weight="700">main</text>
+    <rect x="266" y="256" width="188" height="142" rx="8" fill="#b9e7d0"/>
+    <text x="294" y="307" fill="#17201f" font-size="14" font-weight="700">02 / BRIDGE</text>
+    <text x="294" y="351" fill="#17201f" font-size="24" font-weight="700">preload</text>
+    <rect x="464" y="256" width="188" height="142" rx="8" fill="#f7f4ed"/>
+    <text x="492" y="307" fill="#17201f" font-size="14" font-weight="700">03 / WEB</text>
+    <text x="492" y="351" fill="#17201f" font-size="24" font-weight="700">renderer</text>
+    <text x="68" y="455" fill="#f7f4ed" font-size="16">out/main  ·  out/preload  ·  out/renderer</text>
+  </g>
+</svg>
