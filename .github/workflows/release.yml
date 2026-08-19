@@ -4,14 +4,6 @@ on:
   push:
     tags:
       - "v*-alpha.*"
-  workflow_dispatch:
-    inputs:
-      operation:
-        description: Release maintenance operation
-        required: true
-        type: choice
-        options:
-          - reconcile-dist-tags
 
 permissions:
   contents: read
@@ -19,7 +11,6 @@ permissions:
 
 jobs:
   verify:
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -39,7 +30,6 @@ jobs:
       - run: npm pack --workspace=create-electron-vite-plus --dry-run --json
 
   publish:
-    if: github.event_name == 'push'
     needs: verify
     runs-on: ubuntu-latest
     steps:
@@ -56,20 +46,4 @@ jobs:
       - run: npm run verify:release
       - run: node scripts/publish-packages.mjs
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  maintenance:
-    if: github.event_name == 'workflow_dispatch' && inputs.operation == 'reconcile-dist-tags'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24.11.0
-          registry-url: https://registry.npmjs.org
-
-      - run: node scripts/publish-packages.mjs
-        env:
-          EVP_RECONCILE_ONLY: "1"
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

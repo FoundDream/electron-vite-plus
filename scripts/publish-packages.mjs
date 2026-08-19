@@ -4,7 +4,6 @@ import { spawnSync } from "node:child_process";
 
 const root = process.cwd();
 const releaseTag = "alpha";
-const reconcileOnly = process.env.EVP_RECONCILE_ONLY === "1";
 const packages = [
   { manifest: "package.json", publishArgs: [] },
   {
@@ -18,17 +17,13 @@ for (const entry of packages) {
   const spec = `${manifest.name}@${manifest.version}`;
   const published = isPublished(spec);
 
-  if (reconcileOnly && !published) {
-    throw new Error(`${spec} must be published before reconciling dist-tags`);
-  }
-
   if (published) {
     console.log(`${spec} is already published; skipping`);
   } else {
     runNpm(["publish", ...entry.publishArgs, "--tag", releaseTag, "--provenance"]);
   }
 
-  reconcileDistTags(manifest.name, manifest.version);
+  verifyDistTags(manifest.name, manifest.version);
 }
 
 function isPublished(spec) {
@@ -43,7 +38,7 @@ function isPublished(spec) {
   throw new Error(`Unable to determine whether ${spec} is published:\n${output.trim()}`);
 }
 
-function reconcileDistTags(packageName, version) {
+function verifyDistTags(packageName, version) {
   const tags = readJson(["view", packageName, "dist-tags", "--json"]);
   if (tags[releaseTag] !== version) {
     throw new Error(
@@ -52,8 +47,9 @@ function reconcileDistTags(packageName, version) {
   }
 
   if (releaseTag !== "latest" && tags.latest === version) {
-    console.log(`${packageName}@${version} was implicitly tagged latest; removing latest`);
-    runNpm(["dist-tag", "rm", packageName, "latest"]);
+    console.warn(
+      `${packageName}@${version} was implicitly tagged latest; remove it interactively with npm dist-tag rm ${packageName} latest`,
+    );
   }
 }
 
