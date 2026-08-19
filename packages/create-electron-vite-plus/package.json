@@ -8,7 +8,17 @@
     "scaffold",
     "vite-plus"
   ],
+  "homepage": "https://electron-vite-plus.com/guide/getting-started",
+  "bugs": {
+    "url": "https://github.com/FoundDream/electron-vite-plus/issues"
+  },
   "license": "MIT",
+  "author": "FoundDream",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FoundDream/electron-vite-plus.git",
+    "directory": "packages/create-electron-vite-plus"
+  },
   "bin": {
     "create-electron-vite-plus": "./dist/cli.mjs"
   },
@@ -23,7 +33,8 @@
     ".": {
       "types": "./dist/index.d.mts",
       "import": "./dist/index.mjs"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "publishConfig": {
     "access": "public"

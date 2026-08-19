@@ -8,6 +8,7 @@ The `electron-vite-plus` binary is also available through the shorter `evp` alia
 electron-vite-plus [dev] [root] [options] [-- electron-args]
 electron-vite-plus build [root] [options]
 electron-vite-plus preview [root] [options] [-- electron-args]
+electron-vite-plus doctor [root] [options]
 ```
 
 When the first positional value is not a known command, the CLI treats it as the application root and runs `dev`.
@@ -39,6 +40,14 @@ Builds the application and launches Electron against the production output. Pass
 ```bash
 electron-vite-plus preview
 electron-vite-plus preview --skip-build
+```
+
+### `doctor`
+
+Loads and validates the project configuration, then prints the resolved Electron version, build targets, formats, and output directories without building the application.
+
+```bash
+electron-vite-plus doctor
 ```
 
 ## Options

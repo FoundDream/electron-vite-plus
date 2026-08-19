@@ -5,5 +5,8 @@
   "main": "./out/main/index.js",
   "dependencies": {
     "nanoid": "^5.1.6"
+  },
+  "optionalDependencies": {
+    "optional-native-addon": "1.0.0"
   }
 }

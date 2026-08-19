@@ -1,8 +1,12 @@
 import { app, BrowserWindow } from "electron";
 import path from "node:path";
+import appIcon from "./app-icon.txt?asset";
+import publicIcon from "../../resources/public-icon.txt?asset";
 import { smokeMarker } from "./marker.js";
 
 void smokeMarker;
+void appIcon;
+void publicIcon;
 
 async function createWindow(): Promise<void> {
   const window = new BrowserWindow({

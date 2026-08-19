@@ -1,4 +1,4 @@
-import { appendFileSync, cpSync, mkdtempSync, rmSync } from "node:fs";
+import { appendFileSync, cpSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, test } from "vite-plus/test";
@@ -30,7 +30,7 @@ describe("electron-vite-plus dev server", () => {
     };
 
     const server = await startDevServer(
-      { root: fixtureRoot, port: 0, logLevel: "silent" },
+      { root: fixtureRoot, host: "127.0.0.1", port: 0, logLevel: "silent" },
       {
         createElectronRunner: () => runner,
         onMainRestart: () => {
@@ -56,13 +56,46 @@ describe("electron-vite-plus dev server", () => {
         path.join(fixtureRoot, "src/preload/marker.ts"),
         "\nexport const devPreloadChange = true;\n",
       );
-      await waitFor(() => preloadReloadEvents === 1);
+      await waitFor(() => preloadReloadEvents >= 1);
+
+      appendFileSync(path.join(fixtureRoot, "src/main/marker.ts"), '\nimport "./recovered.js";\n');
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      expect(restarts).toBe(1);
+      writeFileSync(path.join(fixtureRoot, "src/main/recovered.js"), "export {};\n");
+      await waitFor(() => restarts === 2 && mainRestartEvents === 2);
     } finally {
       await server.close();
       rmSync(fixtureRoot, { recursive: true, force: true });
     }
 
     expect(stops).toBe(1);
+  });
+
+  test("rolls back resources when Electron startup fails", async () => {
+    const fixtureRoot = mkdtempSync(path.join(tmpdir(), "electron-vite-plus-rollback-"));
+    cpSync(sourceFixtureRoot, fixtureRoot, { recursive: true });
+    let stops = 0;
+    const runner: ElectronProcessRunner = {
+      start() {
+        throw new Error("simulated Electron startup failure");
+      },
+      async restart() {},
+      async stop() {
+        stops += 1;
+      },
+    };
+
+    try {
+      await expect(
+        startDevServer(
+          { root: fixtureRoot, host: "127.0.0.1", port: 0, logLevel: "silent" },
+          { createElectronRunner: () => runner },
+        ),
+      ).rejects.toThrow("simulated Electron startup failure");
+      expect(stops).toBe(1);
+    } finally {
+      rmSync(fixtureRoot, { recursive: true, force: true });
+    }
   });
 });
 

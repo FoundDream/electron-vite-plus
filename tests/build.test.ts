@@ -14,6 +14,19 @@ describe("electron-vite-plus build", () => {
     expect(existsSync(path.join(fixtureRoot, "out/main/index.js"))).toBe(true);
     expect(existsSync(path.join(fixtureRoot, "out/preload/index.cjs"))).toBe(true);
     expect(existsSync(path.join(fixtureRoot, "out/renderer/index.html"))).toBe(true);
+    const mainAssets = readdirSync(path.join(fixtureRoot, "out/main/assets"));
+    const emittedAsset = mainAssets.find((file) => file.endsWith(".txt"));
+    expect(emittedAsset).toBeDefined();
+    expect(readFileSync(path.join(fixtureRoot, "out/main/index.js"), "utf8")).toContain(
+      `./assets/${emittedAsset}`,
+    );
+    expect(existsSync(path.join(fixtureRoot, "out/main/public-icon.txt"))).toBe(false);
+    expect(readFileSync(path.join(fixtureRoot, "out/main/index.js"), "utf8")).toContain(
+      "../../resources/public-icon.txt",
+    );
+    const preloadBundle = readFileSync(path.join(fixtureRoot, "out/preload/index.cjs"), "utf8");
+    expect(preloadBundle).toContain("__dirname");
+    expect(preloadBundle).not.toContain("import.meta");
   });
 
   test("inherits top-level React plugins for the renderer build", async () => {

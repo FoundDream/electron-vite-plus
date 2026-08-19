@@ -69,6 +69,20 @@ electron: {
 
 Setting `externalize: false` bundles application dependencies where possible, but still leaves Electron and Node built-ins external.
 
+Both `dependencies` and `optionalDependencies` are externalized by default. The Node.js target is derived from the Electron version installed in the application, so generated code does not accidentally require a newer runtime.
+
+### Process assets
+
+Main and preload code can emit a file and receive its runtime path:
+
+```ts
+import iconPath from "./icon.png?asset";
+```
+
+Use `?asset&asarUnpack` for files that a packager will place beside `app.asar`, import native `.node` modules directly, or use `?loader` with a WebAssembly file. Add `electron-vite-plus/client` to `compilerOptions.types` when TypeScript does not load the declarations automatically.
+
+Files under `resources/` are referenced in place and are not copied into each process output. Include that directory in your downstream Electron packager configuration.
+
 ## `electron.preload`
 
 Uses the same options as `electron.main`. Its discovered entry is `src/preload/index.*`, and its format defaults to CommonJS for compatibility with Electron preload loading.
@@ -82,7 +96,7 @@ electron: {
 }
 ```
 
-CommonJS preload entry files are emitted with a `.cjs` extension.
+Output extensions follow both the selected format and the application's `package.json` type, preventing Node.js from interpreting ESM as CommonJS or vice versa. CommonJS preload entry files use `.cjs`.
 
 ## `electron.renderer`
 
@@ -103,6 +117,10 @@ export default defineConfig({
 ```
 
 Top-level Vite configuration is inherited by the renderer. Vite+ task namespaces such as `lint`, `fmt`, `check`, `pack`, `run`, and `test` are excluded before the renderer configuration is passed to Vite.
+
+The renderer target is derived from the Chromium version bundled with the installed Electron release.
+
+Environment files are loaded from the project root. Main, preload, and renderer accept `MAIN_VITE_`, `PRELOAD_VITE_`, and `RENDERER_VITE_` respectively, while all three also accept the standard `VITE_` prefix. Only put values safe for renderer code behind renderer-visible prefixes.
 
 ## Disable a target
 

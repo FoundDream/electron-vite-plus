@@ -7,13 +7,14 @@
   "scripts": {
     "dev": "electron-vite-plus dev",
     "build": "electron-vite-plus build",
+    "doctor": "electron-vite-plus doctor",
     "preview": "electron-vite-plus preview",
     "check": "vp check"
   },
   "devDependencies": {
     "@types/node": "^24.10.0",
     "electron": "^43.4.0",
-    "electron-vite-plus": "^0.1.0-alpha.0",
+    "electron-vite-plus": "0.1.0-alpha.0",
     "typescript": "^5.9.3",
     "vite": "npm:@voidzero-dev/vite-plus-core@0.2.9",
     "vite-plus": "0.2.9"

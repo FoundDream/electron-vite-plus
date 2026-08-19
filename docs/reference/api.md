@@ -66,6 +66,8 @@ const code = await previewApp({
 
 `loadElectronConfig(options?, command?)` resolves the Vite file and Electron block. `createTargetConfigs(config)` expands that resolved model into main, preload, and renderer Vite configurations.
 
+`diagnoseProject(options?)` returns the same validation report used by the `doctor` command. `printDoctorReport(report)` renders it for a terminal.
+
 The package also exports its public TypeScript interfaces, including `ElectronOptions`, `ElectronProcessConfig`, `DevOptions`, `PreviewOptions`, and `ResolvedElectronConfig`.
 
 ::: warning Alpha API

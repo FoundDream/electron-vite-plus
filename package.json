@@ -9,7 +9,16 @@
     "vite",
     "vite-plus"
   ],
+  "homepage": "https://electron-vite-plus.com/",
+  "bugs": {
+    "url": "https://github.com/FoundDream/electron-vite-plus/issues"
+  },
   "license": "MIT",
+  "author": "FoundDream",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FoundDream/electron-vite-plus.git"
+  },
   "bin": {
     "electron-vite-plus": "./dist/cli.mjs",
     "evp": "./dist/cli.mjs"
@@ -19,6 +28,7 @@
   ],
   "files": [
     "dist",
+    "client.d.ts",
     "README.md",
     "LICENSE"
   ],
@@ -27,6 +37,9 @@
     ".": {
       "types": "./dist/index.d.mts",
       "import": "./dist/index.mjs"
+    },
+    "./client": {
+      "types": "./client.d.ts"
     },
     "./package.json": "./package.json"
   },
@@ -43,10 +56,13 @@
     "test": "vp test run",
     "test:watch": "vp test",
     "smoke:build": "node dist/cli.mjs build tests/fixtures/basic",
-    "smoke:runtime": "cross-env EVP_SMOKE_TEST=1 node dist/cli.mjs preview tests/fixtures/basic --skip-build"
+    "smoke:doctor": "node dist/cli.mjs doctor tests/fixtures/basic --log-level silent",
+    "smoke:runtime": "cross-env EVP_SMOKE_TEST=1 node dist/cli.mjs preview tests/fixtures/basic --skip-build",
+    "verify:release": "node scripts/verify-release.mjs"
   },
   "dependencies": {
-    "chokidar": "^5.0.0"
+    "chokidar": "^5.0.0",
+    "magic-string": "^0.30.21"
   },
   "devDependencies": {
     "@types/node": "^24.10.0",
@@ -64,8 +80,8 @@
     "vue": "^3.5.41"
   },
   "peerDependencies": {
-    "electron": ">=32",
-    "vite-plus": ">=0.2.0 <1"
+    "electron": ">=32 <44",
+    "vite-plus": ">=0.2.9 <0.3.0"
   },
   "peerDependenciesMeta": {
     "electron": {
@@ -74,5 +90,6 @@
   },
   "engines": {
     "node": "^20.19.0 || ^22.18.0 || >=24.11.0"
-  }
+  },
+  "packageManager": "npm@11.12.1"
 }

@@ -50,6 +50,10 @@ jobs:
         if: matrix.package_build
         run: npm run smoke:build
 
+      - name: Validate packaged CLI configuration
+        if: matrix.package_build
+        run: npm run smoke:doctor
+
       - name: Inspect core package
         if: matrix.package_build
         run: npm pack --dry-run --json

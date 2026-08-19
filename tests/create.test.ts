@@ -21,6 +21,7 @@ describe("create-electron-vite-plus", () => {
         expect(packageData.name).toBe(`my-${template}-app`);
         expect(packageData.packageManager).toBe("pnpm@10.34.0");
         expect(packageData.scripts.dev).toBe("electron-vite-plus dev");
+        expect(packageData.scripts.doctor).toBe("electron-vite-plus doctor");
         expect(existsSync(path.join(target, ".gitignore"))).toBe(true);
         expect(existsSync(path.join(target, "src/main/index.ts"))).toBe(true);
         expect(existsSync(path.join(target, "src/preload/index.ts"))).toBe(true);

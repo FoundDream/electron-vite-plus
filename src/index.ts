@@ -7,6 +7,8 @@ import type {
 export { buildApp } from "./build.js";
 export { startDevServer } from "./dev.js";
 export { previewApp } from "./preview.js";
+export { diagnoseProject, printDoctorReport } from "./doctor.js";
+export type { DoctorReport, DoctorTarget } from "./doctor.js";
 export { createTargetConfigs, loadElectronConfig } from "./config.js";
 export type * from "./types.js";
 

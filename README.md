@@ -2,7 +2,7 @@
 
 Electron build tooling powered by Vite+.
 
-[Documentation](https://founddream.github.io/electron-vite-plus/) · [Getting started](https://founddream.github.io/electron-vite-plus/guide/getting-started) · [Configuration](https://founddream.github.io/electron-vite-plus/guide/configuration)
+[Documentation](https://electron-vite-plus.com/) · [Getting started](https://electron-vite-plus.com/guide/getting-started) · [Configuration](https://electron-vite-plus.com/guide/configuration)
 
 > Experimental Alpha. This project is independent from Electron, electron-vite,
 > and VoidZero. It is inspired by the workflow of
@@ -23,7 +23,8 @@ The Alpha provides:
 - renderer HMR;
 - main-process restart and preload reload during development;
 - Electron-aware defaults for output formats and external dependencies;
-- `dev`, `build`, and `preview` commands that can be run through `vp run`.
+- Electron-aware asset imports and runtime-derived build targets;
+- `dev`, `build`, `preview`, and `doctor` commands that can be run through `vp run`.
 
 ## Create a project
 
@@ -89,11 +90,12 @@ Add scripts to the Electron application's `package.json`:
   "scripts": {
     "dev": "electron-vite-plus dev",
     "build": "electron-vite-plus build",
+    "doctor": "electron-vite-plus doctor",
     "preview": "electron-vite-plus preview"
   },
   "devDependencies": {
-    "electron": "^43.0.0",
-    "electron-vite-plus": "^0.1.0-alpha.0",
+    "electron": "^43.4.0",
+    "electron-vite-plus": "0.1.0-alpha.0",
     "vite-plus": "0.2.9",
     "vite": "npm:@voidzero-dev/vite-plus-core@0.2.9"
   },
@@ -128,6 +130,7 @@ vp run preview
 electron-vite-plus [dev] [root]
 electron-vite-plus build [root]
 electron-vite-plus preview [root]
+electron-vite-plus doctor [root]
 ```
 
 Use `electron-vite-plus --help` for all options. `evp` is provided as a short
@@ -141,6 +144,6 @@ signing, worker import conventions, or bytecode protection. Vite+ provides the
 underlying package-manager `rebuild` workflow, but native Electron modules do
 not yet have dedicated integration tests here.
 
-The automated suite covers vanilla, React, and Vue production builds plus
-main-process restart and preload reload behavior. CI runs on macOS, Windows,
-and Linux.
+The automated suite covers vanilla, React, and Vue production builds, asset
+emission, process lifecycle behavior, rebuild recovery, and preload reloads. CI
+runs on macOS, Windows, and Linux.

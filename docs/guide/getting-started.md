@@ -9,7 +9,7 @@ The current release is intended for early testing. Pin versions in real projects
 ## Prerequisites
 
 - Node.js `20.19+`, `22.18+`, or `24.11+`
-- Electron `32` or newer
+- Electron `32` through `43` for this Alpha
 - Vite+ `0.2.x`
 
 ## Create an application
@@ -51,6 +51,7 @@ my-app/
   "scripts": {
     "dev": "electron-vite-plus dev",
     "build": "electron-vite-plus build",
+    "doctor": "electron-vite-plus doctor",
     "preview": "electron-vite-plus preview",
     "check": "vp check"
   }
@@ -109,6 +110,7 @@ if (process.env.ELECTRON_RENDERER_URL) {
 vp check
 vp test
 vp run build
+vp run doctor
 vp run preview
 ```
 

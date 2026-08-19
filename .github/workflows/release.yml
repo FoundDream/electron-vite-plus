@@ -10,7 +10,7 @@ permissions:
   id-token: write
 
 jobs:
-  publish:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -25,9 +25,25 @@ jobs:
       - run: npm run check
       - run: npm test
       - run: npm run build:all
-      - run: npm publish --tag alpha --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --workspace=create-electron-vite-plus --tag alpha --provenance
+      - run: npm run verify:release
+      - run: npm pack --dry-run --json
+      - run: npm pack --workspace=create-electron-vite-plus --dry-run --json
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.11.0
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - run: npm ci
+      - run: npm run build:all
+      - run: npm run verify:release
+      - run: node scripts/publish-packages.mjs
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
