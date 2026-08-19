@@ -12,6 +12,25 @@ The current release is intended for early testing. Pin versions in real projects
 - Electron `32` through `43` for this Alpha
 - Vite+ `0.2.x`
 
+Vite+ ships the global `vp` command separately from the local `vite-plus`
+package. Install `vp` before creating a project:
+
+::: code-group
+
+```bash [macOS / Linux]
+curl -fsSL https://vite.plus | bash
+```
+
+```powershell [Windows]
+irm https://vite.plus/ps1 | iex
+```
+
+:::
+
+Open a new shell and run `vp help` to confirm the installation. See the
+[official Vite+ installation guide](https://viteplus.dev/guide/) for platform
+details and alternative installers.
+
 ## Create an application
 
 Choose `vanilla`, `react`, or `vue`:

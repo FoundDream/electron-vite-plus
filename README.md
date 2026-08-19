@@ -28,6 +28,16 @@ The Alpha provides:
 
 ## Create a project
 
+Install the global Vite+ CLI first by following the
+[official installation guide](https://viteplus.dev/guide/):
+
+```bash
+curl -fsSL https://vite.plus | bash
+```
+
+On Windows, use the PowerShell installer documented in the guide. Open a new
+shell and run `vp help` to confirm the installation, then scaffold the app:
+
 ```bash
 npm create electron-vite-plus@alpha my-app -- --template react
 cd my-app
