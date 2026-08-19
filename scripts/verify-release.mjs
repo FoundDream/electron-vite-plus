@@ -36,6 +36,10 @@ for (const templatePath of templatePaths) {
     template.scripts?.doctor === "electron-vite-plus doctor",
     `${templatePath} must expose the doctor script`,
   );
+  assert(
+    template.scripts?.smoke === "electron-vite-plus smoke",
+    `${templatePath} must expose the smoke script`,
+  );
 }
 
 const changelog = readFileSync(path.join(root, "CHANGELOG.md"), "utf8");

@@ -1,3 +1,4 @@
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import type { InlineConfig } from "vite-plus";
 import { createTargetConfigs, loadElectronConfig } from "./config.js";
@@ -21,6 +22,19 @@ export interface DoctorReport {
   warnings: string[];
 }
 
+interface DoctorPackageData {
+  packageManager?: string;
+  dependencies?: Record<string, unknown>;
+  devDependencies?: Record<string, unknown>;
+  peerDependencies?: Record<string, unknown>;
+  pnpm?: {
+    overrides?: Record<string, unknown>;
+    peerDependencyRules?: { allowAny?: unknown };
+  };
+}
+
+const viteAliasPrefix = "npm:@voidzero-dev/vite-plus-core@";
+
 export async function diagnoseProject(options: CommonOptions = {}): Promise<DoctorReport> {
   const resolved = await loadElectronConfig(options, "build");
   const configs = createTargetConfigs(resolved);
@@ -34,6 +48,8 @@ export async function diagnoseProject(options: CommonOptions = {}): Promise<Doct
       "Electron is not installed in this project; build targets use the minimum supported runtime.",
     );
   }
+  if (runtime.warning) warnings.push(runtime.warning);
+  warnings.push(...diagnosePackageSetup(resolved.root));
 
   return {
     root: resolved.root,
@@ -58,7 +74,50 @@ export function printDoctorReport(report: DoctorReport): void {
     );
   }
   for (const warning of report.warnings) console.warn(`  warning   ${warning}`);
-  console.log("\nConfiguration is valid.");
+  console.log("\nConfiguration resolved successfully. Runtime startup was not checked.");
+}
+
+function diagnosePackageSetup(root: string): string[] {
+  const packagePath = path.join(root, "package.json");
+  if (!existsSync(packagePath)) return ["No package.json was found in the project root."];
+  const packageData = JSON.parse(readFileSync(packagePath, "utf8")) as DoctorPackageData;
+  const warnings: string[] = [];
+  const vite = readDependency(packageData, "vite");
+  if (!vite?.startsWith(viteAliasPrefix)) {
+    warnings.push(
+      `The project should alias "vite" to "${viteAliasPrefix}<version>" so renderer plugins use the Vite+ core API.`,
+    );
+  }
+
+  const usesPnpm =
+    packageData.packageManager?.startsWith("pnpm@") || packageData.pnpm !== undefined;
+  if (usesPnpm) {
+    const override = packageData.pnpm?.overrides?.vite;
+    if (typeof override !== "string" || !override.startsWith(viteAliasPrefix)) {
+      warnings.push(
+        `pnpm.overrides.vite should use "${viteAliasPrefix}<version>" to keep the dependency graph on Vite+ core.`,
+      );
+    }
+    const allowAny = packageData.pnpm?.peerDependencyRules?.allowAny;
+    if (!Array.isArray(allowAny) || !allowAny.includes("vite")) {
+      warnings.push(
+        'pnpm.peerDependencyRules.allowAny should include "vite" for Vite plugin peer compatibility.',
+      );
+    }
+  }
+  return warnings;
+}
+
+function readDependency(packageData: DoctorPackageData, name: string): string | undefined {
+  for (const dependencies of [
+    packageData.dependencies,
+    packageData.devDependencies,
+    packageData.peerDependencies,
+  ]) {
+    const value = dependencies?.[name];
+    if (typeof value === "string") return value;
+  }
+  return undefined;
 }
 
 function describeTarget(

@@ -4,7 +4,7 @@ import path from "node:path";
 import { createServer, build as viteBuild, mergeConfig } from "vite-plus";
 import type { Plugin, UserConfig, ViteDevServer } from "vite-plus";
 import { createTargetConfigs, loadElectronConfig } from "./config.js";
-import { ElectronRunner } from "./electron.js";
+import { ElectronRunner, printElectronRuntimeWarning, resolveElectronRuntime } from "./electron.js";
 import type { ElectronProcessRunner } from "./electron.js";
 import type { DevOptions, DevServerHandle, DevServerHooks, ProcessEntry } from "./types.js";
 
@@ -17,6 +17,7 @@ export async function startDevServer(
   hooks: DevServerHooks = {},
 ): Promise<DevServerHandle> {
   const resolved = await loadElectronConfig(options, "serve");
+  printElectronRuntimeWarning(resolveElectronRuntime(resolved.root), options.logLevel);
   const targets = createTargetConfigs(resolved);
   if (!targets.main) throw new Error("The Electron main-process target is disabled.");
   if (!targets.renderer) throw new Error("The Electron renderer target is disabled.");

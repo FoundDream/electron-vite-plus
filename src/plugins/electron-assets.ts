@@ -4,6 +4,8 @@ import MagicString from "magic-string";
 import type { Plugin } from "vite-plus";
 
 interface ElectronAssetPluginOptions {
+  root: string;
+  target: "main" | "preload";
   format: "es" | "cjs";
   outDir: string;
   publicDir: string | false;
@@ -24,7 +26,6 @@ export function electronAssetPlugin(options: ElectronAssetPluginOptions): Plugin
   let emittedAssets: EmittedAsset[] = [];
   let publicAssets: PublicAsset[] = [];
   let nextPlaceholderId = 0;
-  const runtimeDirname = options.format === "es" ? "import.meta.dirname" : "__dirname";
 
   return {
     name: "electron-vite-plus:assets",
@@ -63,21 +64,24 @@ export function electronAssetPlugin(options: ElectronAssetPluginOptions): Plugin
         return `export default require(${JSON.stringify(placeholder)});`;
       }
       if (isWasmLoader) {
+        const runtimePath = createRuntimePath(options, placeholder);
+        const pathImport = options.format === "es" ? 'import { join } from "node:path";' : "";
         return `
           import { readFile } from "node:fs/promises";
-          import { join } from "node:path";
+          ${pathImport}
           export default async function loadWasm(imports = {}) {
-            const source = await readFile(join(${runtimeDirname}, ${JSON.stringify(placeholder)}));
+            const source = await readFile(${runtimePath});
             const result = await WebAssembly.instantiate(source, imports);
             return result.instance;
           }
         `;
       }
 
-      const joinedPath = `join(${runtimeDirname}, ${JSON.stringify(placeholder)})`;
+      const runtimePath = createRuntimePath(options, placeholder);
+      const pathImport = options.format === "es" ? 'import { join } from "node:path"; ' : "";
       return params.has("asarUnpack")
-        ? `import { join } from "node:path"; export default ${joinedPath}.replace("app.asar", "app.asar.unpacked");`
-        : `import { join } from "node:path"; export default ${joinedPath};`;
+        ? `${pathImport}export default ${runtimePath}.replace("app.asar", "app.asar.unpacked");`
+        : `${pathImport}export default ${runtimePath};`;
     },
     renderChunk(code, chunk, outputOptions) {
       let transformed: MagicString | undefined;
@@ -94,7 +98,13 @@ export function electronAssetPlugin(options: ElectronAssetPluginOptions): Plugin
 
       for (const asset of emittedAssets) {
         const emittedFilename = this.getFileName(asset.referenceId);
-        const relativePath = toRelativePath(chunk.fileName, emittedFilename);
+        const outputRoot = outputOptions.dir ?? options.outDir;
+        const relativePath =
+          options.target === "preload"
+            ? normalizeRelativePath(
+                path.relative(options.root, path.resolve(outputRoot, emittedFilename)),
+              )
+            : toRelativePath(chunk.fileName, emittedFilename);
         replacePlaceholder(asset.placeholder, relativePath);
       }
       for (const asset of publicAssets) {
@@ -102,7 +112,10 @@ export function electronAssetPlugin(options: ElectronAssetPluginOptions): Plugin
         const outputRoot = outputOptions.dir ?? options.outDir;
         const chunkPath = path.resolve(outputRoot, chunk.fileName);
         const relativePath = normalizeRelativePath(
-          path.relative(path.dirname(chunkPath), asset.filename),
+          path.relative(
+            options.target === "preload" ? options.root : path.dirname(chunkPath),
+            asset.filename,
+          ),
         );
         replacePlaceholder(asset.placeholder, relativePath);
       }
@@ -115,6 +128,22 @@ export function electronAssetPlugin(options: ElectronAssetPluginOptions): Plugin
         : null;
     },
   };
+}
+
+function createRuntimePath(options: ElectronAssetPluginOptions, placeholder: string): string {
+  if (options.format === "es") {
+    return `join(import.meta.dirname, ${JSON.stringify(placeholder)})`;
+  }
+  if (options.target === "preload") {
+    return `(() => {
+      const argument = process.argv.find((value) =>
+        value.startsWith("--electron-vite-plus-app-path=")
+      ) ?? process.argv.find((value) => value.startsWith("--app-path="));
+      if (!argument) throw new Error("Unable to resolve the application path for a sandboxed preload asset.");
+      return argument.slice(argument.indexOf("=") + 1) + "/" + ${JSON.stringify(placeholder)};
+    })()`;
+  }
+  return `__dirname + "/" + ${JSON.stringify(placeholder)}`;
 }
 
 /** Supply CommonJS globals when application code is emitted as ESM. */

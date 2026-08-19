@@ -23,5 +23,6 @@ declare module "*.wasm?loader" {
 declare namespace NodeJS {
   interface ProcessEnv {
     readonly ELECTRON_RENDERER_URL?: string;
+    readonly ELECTRON_VITE_PLUS_SMOKE?: "1";
   }
 }

@@ -1,5 +1,11 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
+
+if (process.env.ELECTRON_VITE_PLUS_SMOKE === "1") {
+  ipcMain.once("electron-vite-plus:smoke-ready", () => {
+    console.log("EVP_SMOKE_READY");
+  });
+}
 
 async function createWindow(): Promise<void> {
   const window = new BrowserWindow({
@@ -9,6 +15,7 @@ async function createWindow(): Promise<void> {
       contextIsolation: true,
       sandbox: true,
       preload: path.join(import.meta.dirname, "../preload/index.cjs"),
+      additionalArguments: [`--electron-vite-plus-app-path=${app.getAppPath()}`],
     },
   });
 

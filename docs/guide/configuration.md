@@ -83,6 +83,22 @@ Use `?asset&asarUnpack` for files that a packager will place beside `app.asar`, 
 
 Files under `resources/` are referenced in place and are not copied into each process output. Include that directory in your downstream Electron packager configuration.
 
+Sandboxed preload scripts cannot import `node:path` or use `__dirname`. When a preload imports `?asset`, pass the application path through Electron's documented `additionalArguments` bridge. Generated projects already include this setting:
+
+```ts
+new BrowserWindow({
+  webPreferences: {
+    preload: path.join(import.meta.dirname, "../preload/index.cjs"),
+    sandbox: true,
+    additionalArguments: [`--electron-vite-plus-app-path=${app.getAppPath()}`],
+  },
+});
+```
+
+electron-vite-plus uses that value to produce an app-relative asset path without loading Node.js modules inside the sandbox.
+
+Electron's sandbox only exposes a small module subset to preload code. Native modules and the WebAssembly filesystem loader therefore require an unsandboxed preload or the main process; `?asset` path generation itself remains sandbox-compatible.
+
 ## `electron.preload`
 
 Uses the same options as `electron.main`. Its discovered entry is `src/preload/index.*`, and its format defaults to CommonJS for compatibility with Electron preload loading.

@@ -74,6 +74,13 @@ export interface PreviewOptions extends CommonOptions {
   electronArgs?: string[];
 }
 
+export interface SmokeOptions extends CommonOptions {
+  skipBuild?: boolean;
+  electronArgs?: string[];
+  /** Time to wait for the application readiness marker. Defaults to 15 seconds. */
+  timeout?: number;
+}
+
 export interface ResolvedElectronConfig {
   root: string;
   mode: string;

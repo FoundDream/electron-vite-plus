@@ -24,7 +24,7 @@ The Alpha provides:
 - main-process restart and preload reload during development;
 - Electron-aware defaults for output formats and external dependencies;
 - Electron-aware asset imports and runtime-derived build targets;
-- `dev`, `build`, `preview`, and `doctor` commands that can be run through `vp run`.
+- `dev`, `build`, `preview`, `smoke`, and `doctor` commands that can be run through `vp run`.
 
 ## Create a project
 
@@ -101,7 +101,8 @@ Add scripts to the Electron application's `package.json`:
     "dev": "electron-vite-plus dev",
     "build": "electron-vite-plus build",
     "doctor": "electron-vite-plus doctor",
-    "preview": "electron-vite-plus preview"
+    "preview": "electron-vite-plus preview",
+    "smoke": "electron-vite-plus smoke"
   },
   "devDependencies": {
     "electron": "^43.4.0",
@@ -132,6 +133,7 @@ vp check
 vp test
 vp run build
 vp run preview
+vp run smoke
 ```
 
 ## Commands
@@ -140,6 +142,7 @@ vp run preview
 electron-vite-plus [dev] [root]
 electron-vite-plus build [root]
 electron-vite-plus preview [root]
+electron-vite-plus smoke [root]
 electron-vite-plus doctor [root]
 ```
 
@@ -155,5 +158,5 @@ underlying package-manager `rebuild` workflow, but native Electron modules do
 not yet have dedicated integration tests here.
 
 The automated suite covers vanilla, React, and Vue production builds, asset
-emission, process lifecycle behavior, rebuild recovery, and preload reloads. CI
-runs on macOS, Windows, and Linux.
+emission, process lifecycle behavior, rebuild recovery, preload reloads, and a
+main/preload/renderer readiness handshake. CI runs on macOS, Windows, and Linux.

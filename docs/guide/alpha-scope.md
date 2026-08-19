@@ -14,9 +14,10 @@ The Alpha release validates the core build and development architecture. It is u
 - main/preload asset, native-module, and WebAssembly path handling;
 - serialized Electron restarts and failed-rebuild recovery;
 - vanilla, React, and Vue project templates;
-- `dev`, `build`, `preview`, and `doctor` commands;
+- `dev`, `build`, `preview`, `smoke`, and `doctor` commands;
 - automated build coverage across macOS, Windows, and Linux;
-- a macOS Electron runtime smoke test.
+- a macOS main/preload/renderer readiness smoke test;
+- conservative build-target fallback and CI coverage for the next Electron beta.
 
 ## Not included yet
 

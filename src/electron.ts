@@ -1,13 +1,19 @@
-import { type ChildProcess, spawn } from "node:child_process";
+import { type ChildProcess, spawn, type StdioOptions } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
+import {
+  maximumElectronMajor,
+  minimumElectronMajor,
+  resolveRuntimeTarget,
+} from "./runtime-targets.js";
 
 export interface ElectronRunnerOptions {
   root: string;
   env?: NodeJS.ProcessEnv;
   args?: string[];
   executablePath?: string;
+  stdio?: StdioOptions;
   onExit?: (code: number | null, signal: NodeJS.Signals | null) => void;
   onError?: (error: Error) => void;
 }
@@ -24,30 +30,8 @@ export interface ElectronRuntimeInfo {
   nodeTarget: string;
   chromeTarget: string;
   supportsEsm: boolean;
+  warning?: string;
 }
-
-interface RuntimeTarget {
-  node: string;
-  chrome: string;
-}
-
-const runtimeTargets: Record<number, RuntimeTarget> = {
-  32: { node: "20.16", chrome: "128" },
-  33: { node: "20.18", chrome: "130" },
-  34: { node: "20.18", chrome: "132" },
-  35: { node: "22.14", chrome: "134" },
-  36: { node: "22.14", chrome: "136" },
-  37: { node: "22.16", chrome: "138" },
-  38: { node: "22.19", chrome: "140" },
-  39: { node: "22.20", chrome: "142" },
-  40: { node: "24.14", chrome: "144" },
-  41: { node: "24.14", chrome: "146" },
-  42: { node: "24.15", chrome: "148" },
-  43: { node: "24.17", chrome: "150" },
-};
-const supportedElectronMajors = Object.keys(runtimeTargets).map(Number);
-const minimumElectronMajor = Math.min(...supportedElectronMajors);
-const maximumElectronMajor = Math.max(...supportedElectronMajors);
 
 export class ElectronRunner implements ElectronProcessRunner {
   private child: ChildProcess | undefined;
@@ -95,7 +79,7 @@ export class ElectronRunner implements ElectronProcessRunner {
     const electronPath = this.options.executablePath ?? resolveElectronPath(this.options.root);
     const child = spawn(electronPath, [this.options.root, ...(this.options.args ?? [])], {
       cwd: this.options.root,
-      stdio: "inherit",
+      stdio: this.options.stdio ?? "inherit",
       env: { ...process.env, ...this.options.env },
     });
     this.child = child;
@@ -167,15 +151,16 @@ export function resolveElectronRuntime(root: string): ElectronRuntimeInfo {
 
   const major = version ? Number.parseInt(version.split(".", 1)[0] ?? "", 10) : undefined;
   const resolvedMajor = major !== undefined && Number.isFinite(major) ? major : undefined;
-  if (
-    resolvedMajor !== undefined &&
-    (resolvedMajor < minimumElectronMajor || resolvedMajor > maximumElectronMajor)
-  ) {
+  if (resolvedMajor !== undefined && resolvedMajor < minimumElectronMajor) {
     throw new Error(
-      `Electron ${version} is unsupported. Install Electron ${minimumElectronMajor} through ${maximumElectronMajor}.`,
+      `Electron ${version} is unsupported. Install Electron ${minimumElectronMajor} or newer.`,
     );
   }
   const target = resolveRuntimeTarget(resolvedMajor);
+  const warning =
+    resolvedMajor !== undefined && resolvedMajor > maximumElectronMajor
+      ? `Electron ${version} is newer than the validated Electron ${maximumElectronMajor} target table. Using conservative Electron ${maximumElectronMajor} build targets; validate runtime behavior before shipping.`
+      : undefined;
 
   return {
     ...(version ? { version } : {}),
@@ -183,12 +168,17 @@ export function resolveElectronRuntime(root: string): ElectronRuntimeInfo {
     nodeTarget: `node${target.node}`,
     chromeTarget: `chrome${target.chrome}`,
     supportsEsm: resolvedMajor === undefined || resolvedMajor >= 28,
+    ...(warning ? { warning } : {}),
   };
 }
 
-function resolveRuntimeTarget(major: number | undefined): RuntimeTarget {
-  const selectedMajor = major ?? minimumElectronMajor;
-  return runtimeTargets[selectedMajor] ?? runtimeTargets[minimumElectronMajor]!;
+export function printElectronRuntimeWarning(
+  runtime: ElectronRuntimeInfo,
+  logLevel?: "info" | "warn" | "error" | "silent",
+): void {
+  if (runtime.warning && logLevel !== "silent") {
+    console.warn(`[electron-vite-plus] ${runtime.warning}`);
+  }
 }
 
 function hasExited(child: ChildProcess): boolean {

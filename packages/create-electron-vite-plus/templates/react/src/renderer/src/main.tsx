@@ -10,3 +10,5 @@ createRoot(document.querySelector("#root")!).render(
     <App />
   </StrictMode>,
 );
+
+window.dispatchEvent(new Event("electron-vite-plus:renderer-ready"));

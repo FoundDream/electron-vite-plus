@@ -62,13 +62,28 @@ const code = await previewApp({
 });
 ```
 
+Signal termination is reported and resolves to a non-zero status rather than being treated as a successful exit.
+
+## `smokeApp(options?)`
+
+Builds unless `skipBuild` is enabled, launches Electron with the runtime-smoke environment, and waits for the explicit preload/renderer readiness marker.
+
+```ts
+import { smokeApp } from "electron-vite-plus";
+
+const code = await smokeApp({
+  skipBuild: true,
+  timeout: 10_000,
+});
+```
+
 ## Configuration helpers
 
 `loadElectronConfig(options?, command?)` resolves the Vite file and Electron block. `createTargetConfigs(config)` expands that resolved model into main, preload, and renderer Vite configurations.
 
 `diagnoseProject(options?)` returns the same validation report used by the `doctor` command. `printDoctorReport(report)` renders it for a terminal.
 
-The package also exports its public TypeScript interfaces, including `ElectronOptions`, `ElectronProcessConfig`, `DevOptions`, `PreviewOptions`, and `ResolvedElectronConfig`.
+The package also exports its public TypeScript interfaces, including `ElectronOptions`, `ElectronProcessConfig`, `DevOptions`, `PreviewOptions`, `SmokeOptions`, and `ResolvedElectronConfig`.
 
 ::: warning Alpha API
 Programmatic exports are available, but their stability is not yet guaranteed during the Alpha line. Prefer the documented CLI where possible.

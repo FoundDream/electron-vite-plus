@@ -9,6 +9,7 @@
     "build": "electron-vite-plus build",
     "doctor": "electron-vite-plus doctor",
     "preview": "electron-vite-plus preview",
+    "smoke": "electron-vite-plus smoke",
     "check": "vp check"
   },
   "dependencies": {

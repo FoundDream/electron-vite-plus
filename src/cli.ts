@@ -7,8 +7,9 @@ import { buildApp } from "./build.js";
 import { startDevServer } from "./dev.js";
 import { diagnoseProject, printDoctorReport } from "./doctor.js";
 import { previewApp } from "./preview.js";
+import { smokeApp } from "./smoke.js";
 
-const commands = new Set(["dev", "build", "preview", "doctor"]);
+const commands = new Set(["dev", "build", "preview", "smoke", "doctor"]);
 const logLevels = new Set(["info", "warn", "error", "silent"]);
 
 async function main(): Promise<void> {
@@ -26,6 +27,7 @@ async function main(): Promise<void> {
       host: { type: "string" },
       port: { type: "string" },
       "skip-build": { type: "boolean" },
+      timeout: { type: "string" },
       "log-level": { type: "string" },
       help: { type: "boolean", short: "h" },
       version: { type: "boolean", short: "v" },
@@ -79,6 +81,20 @@ async function main(): Promise<void> {
     process.exitCode = code;
     return;
   }
+  if (command === "smoke") {
+    const timeout = values.timeout ? Number(values.timeout) : undefined;
+    if (timeout !== undefined && (!Number.isInteger(timeout) || timeout <= 0)) {
+      throw new Error(`Invalid smoke timeout: ${values.timeout}. Expected positive milliseconds.`);
+    }
+    const code = await smokeApp({
+      ...common,
+      ...(values["skip-build"] ? { skipBuild: true } : {}),
+      ...(timeout !== undefined ? { timeout } : {}),
+      electronArgs,
+    });
+    process.exitCode = code;
+    return;
+  }
 
   const port = values.port ? Number(values.port) : undefined;
   if (port !== undefined && (!Number.isInteger(port) || port < 0 || port > 65_535)) {
@@ -105,6 +121,7 @@ Usage:
   electron-vite-plus [dev] [root] [options] [-- electron-args]
   electron-vite-plus build [root] [options]
   electron-vite-plus preview [root] [options] [-- electron-args]
+  electron-vite-plus smoke [root] [options] [-- electron-args]
   electron-vite-plus doctor [root] [options]
 
 Options:
@@ -113,7 +130,8 @@ Options:
       --out-dir <dir>       Set the base output directory
       --host <host>         Renderer dev-server host
       --port <port>         Renderer dev-server port
-      --skip-build          Preview the existing build
+      --skip-build          Preview or smoke-test the existing build
+      --timeout <ms>        Runtime smoke readiness timeout
       --log-level <level>   info | warn | error | silent
   -h, --help                Show help
   -v, --version             Show version`);

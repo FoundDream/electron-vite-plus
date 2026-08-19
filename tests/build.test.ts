@@ -25,8 +25,10 @@ describe("electron-vite-plus build", () => {
       "../../resources/public-icon.txt",
     );
     const preloadBundle = readFileSync(path.join(fixtureRoot, "out/preload/index.cjs"), "utf8");
-    expect(preloadBundle).toContain("__dirname");
+    expect(preloadBundle).not.toContain("__dirname");
     expect(preloadBundle).not.toContain("import.meta");
+    expect(preloadBundle).not.toContain('require("node:path")');
+    expect(preloadBundle).toContain("--electron-vite-plus-app-path=");
   });
 
   test("inherits top-level React plugins for the renderer build", async () => {

@@ -12,6 +12,8 @@ The current release is intended for early testing. Pin versions in real projects
 - Electron `32` through `43` for this Alpha
 - Vite+ `0.2.x`
 
+Newer Electron majors use the latest validated conservative build targets with a warning. That fallback supports early compatibility testing but does not expand the published peer-support range.
+
 Vite+ ships the global `vp` command separately from the local `vite-plus`
 package. Install `vp` before creating a project:
 
@@ -72,6 +74,7 @@ my-app/
     "build": "electron-vite-plus build",
     "doctor": "electron-vite-plus doctor",
     "preview": "electron-vite-plus preview",
+    "smoke": "electron-vite-plus smoke",
     "check": "vp check"
   }
 }
@@ -131,9 +134,10 @@ vp test
 vp run build
 vp run doctor
 vp run preview
+vp run smoke
 ```
 
-The production build is written to `out/` by default. Preview builds first, then launches Electron against the result.
+The production build is written to `out/` by default. Preview builds first, then launches Electron against the result. Smoke waits for the generated renderer entry and preload bridge to complete the readiness handshake, then shuts Electron down.
 
 ## Next steps
 

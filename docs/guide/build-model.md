@@ -68,8 +68,10 @@ renderer change → Vite HMR        → update the web surface
 
 Restarts are briefly debounced so a single source edit does not produce a burst of Electron processes. On shutdown, electron-vite-plus closes file watchers, the dev server, and the Electron child process.
 
-## Production and preview
+## Production, preview, and smoke
 
 `build` runs enabled targets and writes them under the shared output directory. `preview` performs that build unless `--skip-build` is set, then launches Electron using the application's package root.
 
 This preview is a runtime check of the compiled application. It is not an installer, signer, or distributable-package preview.
+
+`smoke` goes one step further: renderer code emits a readiness event after application initialization, preload forwards it over IPC, and main prints the marker observed by the CLI. A process that merely starts, crashes before loading preload, or never runs the renderer entry fails through its exit status or the readiness timeout.

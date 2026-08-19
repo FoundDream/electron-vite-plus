@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
 import appIcon from "./app-icon.txt?asset";
 import publicIcon from "../../resources/public-icon.txt?asset";
@@ -7,6 +7,12 @@ import { smokeMarker } from "./marker.js";
 void smokeMarker;
 void appIcon;
 void publicIcon;
+
+if (process.env.ELECTRON_VITE_PLUS_SMOKE === "1") {
+  ipcMain.once("electron-vite-plus:smoke-ready", () => {
+    console.log("EVP_SMOKE_READY");
+  });
+}
 
 async function createWindow(): Promise<void> {
   const window = new BrowserWindow({
@@ -17,6 +23,7 @@ async function createWindow(): Promise<void> {
       contextIsolation: true,
       sandbox: true,
       preload: path.join(import.meta.dirname, "../preload/index.cjs"),
+      additionalArguments: [`--electron-vite-plus-app-path=${app.getAppPath()}`],
     },
   });
 
@@ -29,11 +36,6 @@ async function createWindow(): Promise<void> {
 }
 
 void app.whenReady().then(async () => {
-  if (process.env.EVP_SMOKE_TEST === "1") {
-    console.log("EVP_SMOKE_READY");
-    app.quit();
-    return;
-  }
   if (process.env.EVP_DEV_SMOKE_TEST === "1") {
     console.log(`EVP_DEV_SMOKE_READY ${process.pid}`);
     setTimeout(() => app.quit(), 15_000);

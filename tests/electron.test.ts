@@ -54,7 +54,7 @@ describe("ElectronRunner", () => {
     }
   });
 
-  test("maps installed Electron runtimes and rejects unsupported majors", () => {
+  test("maps installed Electron runtimes and rejects versions below the support floor", () => {
     const root = createNodeApp("export {};");
     const electronPackage = path.join(root, "node_modules/electron/package.json");
     mkdirSync(path.dirname(electronPackage), { recursive: true });
@@ -67,8 +67,27 @@ describe("ElectronRunner", () => {
         chromeTarget: "chrome148",
       });
 
-      writeFileSync(electronPackage, JSON.stringify({ name: "electron", version: "44.0.0" }));
-      expect(() => resolveElectronRuntime(root)).toThrow("Electron 44.0.0 is unsupported");
+      writeFileSync(electronPackage, JSON.stringify({ name: "electron", version: "31.7.7" }));
+      expect(() => resolveElectronRuntime(root)).toThrow("Electron 31.7.7 is unsupported");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("uses conservative targets with a warning for the next Electron beta", () => {
+    const root = createNodeApp("export {};");
+    const electronPackage = path.join(root, "node_modules/electron/package.json");
+    mkdirSync(path.dirname(electronPackage), { recursive: true });
+    const version = process.env.EVP_NEXT_ELECTRON_VERSION ?? "44.0.0-beta.1";
+
+    try {
+      writeFileSync(electronPackage, JSON.stringify({ name: "electron", version }));
+      expect(resolveElectronRuntime(root)).toMatchObject({
+        version,
+        nodeTarget: "node24.17",
+        chromeTarget: "chrome150",
+        warning: expect.stringContaining("newer than the validated Electron 43 target table"),
+      });
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

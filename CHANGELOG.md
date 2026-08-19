@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Return a non-zero status and report the terminating signal when Electron exits abnormally during `preview`.
+- Add a `smoke` command with an explicit main/preload/renderer readiness handshake and timeout handling.
+- Diagnose Vite+ aliases and pnpm peer compatibility settings through `doctor`.
+- Use conservative build targets with a warning when a newer Electron major is detected.
+- Keep emitted asset paths compatible with sandboxed CommonJS preload scripts.
+
 ## 0.1.0-alpha.0
 
 - Build Electron main, preload, and renderer targets through Vite+.

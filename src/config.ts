@@ -137,7 +137,7 @@ function createNodeTargetConfig(
     envPrefix: target === "main" ? ["MAIN_VITE_", "VITE_"] : ["PRELOAD_VITE_", "VITE_"],
     publicDir,
     plugins: [
-      electronAssetPlugin({ format, outDir: targetOutDir, publicDir }),
+      electronAssetPlugin({ root, target, format, outDir: targetOutDir, publicDir }),
       electronEsmShimPlugin(),
     ],
     build: {

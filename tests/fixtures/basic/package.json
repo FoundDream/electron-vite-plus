@@ -6,7 +6,23 @@
   "dependencies": {
     "nanoid": "^5.1.6"
   },
+  "devDependencies": {
+    "electron": "^43.4.0",
+    "vite": "npm:@voidzero-dev/vite-plus-core@0.2.9",
+    "vite-plus": "0.2.9"
+  },
   "optionalDependencies": {
     "optional-native-addon": "1.0.0"
+  },
+  "packageManager": "pnpm@10.34.0",
+  "pnpm": {
+    "overrides": {
+      "vite": "npm:@voidzero-dev/vite-plus-core@0.2.9"
+    },
+    "peerDependencyRules": {
+      "allowAny": [
+        "vite"
+      ]
+    }
   }
 }

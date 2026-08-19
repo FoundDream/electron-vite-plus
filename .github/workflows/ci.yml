@@ -65,3 +65,22 @@ jobs:
       - name: Electron runtime smoke test
         if: runner.os == 'macOS'
         run: npm run smoke:runtime
+
+  next-electron:
+    name: Next Electron beta target fallback
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.11.0
+          cache: npm
+
+      - run: npm ci
+
+      - name: Resolve the current Electron beta
+        run: echo "EVP_NEXT_ELECTRON_VERSION=$(npm view electron@beta version)" >> "$GITHUB_ENV"
+
+      - name: Validate conservative runtime fallback
+        run: npx vp test run tests/electron.test.ts
