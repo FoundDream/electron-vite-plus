@@ -6,15 +6,15 @@ export default defineConfig({
   title: "electron-vite-plus",
   titleTemplate: ":title · electron-vite-plus",
   description: "Electron build tooling powered by Vite+.",
-  base: "/electron-vite-plus/",
+  base: "/",
   cleanUrls: true,
   lastUpdated: true,
   sitemap: {
-    hostname: "https://founddream.github.io/electron-vite-plus/",
+    hostname: "https://electron-vite-plus.com/",
   },
   head: [
-    ["link", { rel: "icon", type: "image/svg+xml", href: "/electron-vite-plus/mark.svg" }],
-    ["meta", { name: "theme-color", content: "#ff6b35" }],
+    ["link", { rel: "icon", type: "image/svg+xml", href: "/mark.svg" }],
+    ["meta", { name: "theme-color", content: "#6657f6" }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:title", content: "electron-vite-plus" }],
     [
@@ -29,9 +29,9 @@ export default defineConfig({
     logo: "/mark.svg",
     siteTitle: "electron-vite-plus",
     nav: [
-      { text: "Guide", link: "/guide/getting-started" },
-      { text: "Configuration", link: "/guide/configuration" },
-      { text: "Commands", link: "/reference/commands" },
+      { text: "Docs", link: "/guide/getting-started" },
+      { text: "Config", link: "/guide/configuration" },
+      { text: "API", link: "/reference/api" },
       {
         text: "0.1.0-alpha",
         items: [
