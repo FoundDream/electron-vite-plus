@@ -20,7 +20,7 @@
     "directory": "packages/create-electron-vite-plus"
   },
   "bin": {
-    "create-electron-vite-plus": "./dist/cli.mjs"
+    "create-electron-vite-plus": "dist/cli.mjs"
   },
   "files": [
     "dist",

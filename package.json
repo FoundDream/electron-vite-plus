@@ -20,8 +20,8 @@
     "url": "git+https://github.com/FoundDream/electron-vite-plus.git"
   },
   "bin": {
-    "electron-vite-plus": "./dist/cli.mjs",
-    "evp": "./dist/cli.mjs"
+    "electron-vite-plus": "dist/cli.mjs",
+    "evp": "dist/cli.mjs"
   },
   "workspaces": [
     "packages/*"
