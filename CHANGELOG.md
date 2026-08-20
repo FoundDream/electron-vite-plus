@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0-alpha.1
+
 - Return a non-zero status and report the terminating signal when Electron exits abnormally during `preview`.
 - Add a `smoke` command with an explicit main/preload/renderer readiness handshake and timeout handling.
 - Diagnose Vite+ aliases and pnpm peer compatibility settings through `doctor`.
