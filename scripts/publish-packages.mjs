@@ -4,6 +4,8 @@ import { spawnSync } from "node:child_process";
 
 const root = process.cwd();
 const releaseTag = "alpha";
+const distTagVerificationAttempts = 8;
+const distTagVerificationDelay = 2_000;
 const packages = [
   { manifest: "package.json", publishArgs: [] },
   {
@@ -23,7 +25,7 @@ for (const entry of packages) {
     runNpm(["publish", ...entry.publishArgs, "--tag", releaseTag, "--provenance"]);
   }
 
-  verifyDistTags(manifest.name, manifest.version);
+  await verifyDistTags(manifest.name, manifest.version);
 }
 
 function isPublished(spec) {
@@ -38,19 +40,36 @@ function isPublished(spec) {
   throw new Error(`Unable to determine whether ${spec} is published:\n${output.trim()}`);
 }
 
-function verifyDistTags(packageName, version) {
-  const tags = readJson(["view", packageName, "dist-tags", "--json"]);
-  if (tags[releaseTag] !== version) {
-    throw new Error(
-      `${packageName} dist-tag ${releaseTag} must point to ${version}; received ${tags[releaseTag] ?? "missing"}`,
-    );
+async function verifyDistTags(packageName, version) {
+  let observedTag;
+
+  for (let attempt = 1; attempt <= distTagVerificationAttempts; attempt += 1) {
+    const tags = readJson(["view", packageName, "dist-tags", "--json"]);
+    observedTag = tags[releaseTag];
+    if (observedTag === version) {
+      if (releaseTag !== "latest" && tags.latest === version) {
+        console.warn(
+          `${packageName}@${version} was implicitly tagged latest; remove it interactively with npm dist-tag rm ${packageName} latest`,
+        );
+      }
+      return;
+    }
+
+    if (attempt < distTagVerificationAttempts) {
+      console.log(
+        `${packageName} dist-tag ${releaseTag} still points to ${observedTag ?? "missing"}; retrying after registry propagation`,
+      );
+      await delay(distTagVerificationDelay);
+    }
   }
 
-  if (releaseTag !== "latest" && tags.latest === version) {
-    console.warn(
-      `${packageName}@${version} was implicitly tagged latest; remove it interactively with npm dist-tag rm ${packageName} latest`,
-    );
-  }
+  throw new Error(
+    `${packageName} dist-tag ${releaseTag} must point to ${version}; received ${observedTag ?? "missing"}`,
+  );
+}
+
+function delay(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 function readJson(args) {
