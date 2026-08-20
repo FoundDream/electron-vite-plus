@@ -99,6 +99,8 @@ electron-vite-plus uses that value to produce an app-relative asset path without
 
 Electron's sandbox only exposes a small module subset to preload code. Native modules and the WebAssembly filesystem loader therefore require an unsandboxed preload or the main process; `?asset` path generation itself remains sandbox-compatible.
 
+Your downstream packager must still copy resources and honor `asarUnpack`. See [Packaging and distribution](./packaging#assets-and-asar).
+
 ## `electron.preload`
 
 Uses the same options as `electron.main`. Its discovered entry is `src/preload/index.*`, and its format defaults to CommonJS for compatibility with Electron preload loading.
@@ -134,7 +136,7 @@ export default defineConfig({
 
 Top-level Vite configuration is inherited by the renderer. Vite+ task namespaces such as `lint`, `fmt`, `check`, `pack`, `run`, and `test` are excluded before the renderer configuration is passed to Vite.
 
-The renderer target is derived from the Chromium version bundled with the installed Electron release.
+The renderer target is derived from the Chromium version bundled with the installed Electron release. See the [runtime target table](./compatibility#runtime-derived-build-targets).
 
 Environment files are loaded from the project root. Main, preload, and renderer accept `MAIN_VITE_`, `PRELOAD_VITE_`, and `RENDERER_VITE_` respectively, while all three also accept the standard `VITE_` prefix. Only put values safe for renderer code behind renderer-visible prefixes.
 
@@ -162,3 +164,5 @@ electron-vite-plus build --config vite.desktop.config.ts
 ```
 
 The default mode is `development` for `dev` and `production` for `build` and `preview`.
+
+Run `vp run doctor` after configuration changes, then use the [runtime validation](./runtime-validation) sequence to distinguish resolution, build, and startup failures.

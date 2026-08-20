@@ -35,3 +35,5 @@ Vite+ provides the underlying package-manager rebuild workflow, but electron-vit
 Pin `electron-vite-plus`, `vite-plus`, and the aliased Vite core version together. Validate production output on every operating system you plan to ship, and keep packaging/signing as an explicit downstream step.
 
 If you hit a problem, open a [bug report](https://github.com/FoundDream/electron-vite-plus/issues/new?template=bug_report.yml) with a minimal reproduction and the relevant Electron, Vite+, Node.js, and operating-system versions.
+
+Before adopting the Alpha in an existing application, review [compatibility](./compatibility), follow the [migration checks](./migration#migration-acceptance-checks), and keep [packaging](./packaging) as an explicit downstream gate.

@@ -3,7 +3,7 @@
 electron-vite-plus connects Electron's three execution environments to the Vite+ toolchain. The fastest path is to scaffold an application, install it with Vite+, and start the development loop.
 
 ::: warning Alpha software
-The current release is intended for early testing. Pin versions in real projects and review the [current scope](./alpha-scope) before adopting it.
+Version `0.1.0-alpha.1` is intended for early testing. Pin versions in real projects and review the [current scope](./alpha-scope) before adopting it.
 :::
 
 ## Prerequisites
@@ -142,5 +142,8 @@ The production build is written to `out/` by default. Preview builds first, then
 ## Next steps
 
 - Understand the [three-target build model](./build-model).
+- Learn what [doctor, build, preview, and smoke](./runtime-validation) each prove.
+- Follow the [migration guide](./migration) when adopting an existing application.
 - Tune entries, output, and dependency handling in [configuration](./configuration).
+- Review [compatibility](./compatibility) and the downstream [packaging boundary](./packaging).
 - See every available [CLI option](../reference/commands).

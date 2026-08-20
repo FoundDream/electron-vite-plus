@@ -5,7 +5,8 @@ const repository = "https://github.com/FoundDream/electron-vite-plus";
 export default defineConfig({
   title: "electron-vite-plus",
   titleTemplate: ":title · electron-vite-plus",
-  description: "Electron build tooling powered by Vite+.",
+  description:
+    "Develop, build, and validate Electron main, preload, and renderer targets with Vite+.",
   base: "/",
   cleanUrls: true,
   lastUpdated: true,
@@ -21,7 +22,8 @@ export default defineConfig({
       "meta",
       {
         property: "og:description",
-        content: "One Vite+ workflow for Electron main, preload, and renderer targets.",
+        content:
+          "Develop, build, and prove Electron runtime readiness across main, preload, and renderer with Vite+.",
       },
     ],
   ],
@@ -30,13 +32,14 @@ export default defineConfig({
     siteTitle: "electron-vite-plus",
     nav: [
       { text: "Docs", link: "/guide/getting-started" },
+      { text: "Runtime", link: "/guide/runtime-validation" },
       { text: "Config", link: "/guide/configuration" },
       { text: "API", link: "/reference/api" },
       {
-        text: "0.1.0-alpha",
+        text: "0.1.0-alpha.1",
         items: [
           { text: "Alpha scope", link: "/guide/alpha-scope" },
-          { text: "Changelog", link: `${repository}/blob/main/CHANGELOG.md` },
+          { text: "Release notes", link: `${repository}/blob/main/CHANGELOG.md` },
         ],
       },
     ],
@@ -46,7 +49,17 @@ export default defineConfig({
         items: [
           { text: "Getting started", link: "/guide/getting-started" },
           { text: "How the build works", link: "/guide/build-model" },
+          { text: "Runtime validation", link: "/guide/runtime-validation" },
+          { text: "Migrate an existing app", link: "/guide/migration" },
           { text: "Configuration", link: "/guide/configuration" },
+        ],
+      },
+      {
+        text: "Shipping",
+        items: [
+          { text: "Compatibility", link: "/guide/compatibility" },
+          { text: "Packaging", link: "/guide/packaging" },
+          { text: "Troubleshooting", link: "/guide/troubleshooting" },
           { text: "Alpha scope", link: "/guide/alpha-scope" },
         ],
       },
@@ -72,7 +85,7 @@ export default defineConfig({
     },
     footer: {
       message: "Released under the MIT License.",
-      copyright: "Experimental software — expect the surface to evolve during Alpha.",
+      copyright: "Experimental software. Expect the surface to evolve during Alpha.",
     },
   },
 });

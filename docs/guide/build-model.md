@@ -14,7 +14,7 @@ Entry discovery checks TypeScript and JavaScript variants of `index` and the tar
 
 ## Main and preload
 
-Both Node-oriented targets use a server-side Vite build with a `node20` target. They keep source maps in development, skip minification by default, and do not copy a public directory.
+Both Node-oriented targets use a server-side Vite build. Their Node.js target is derived from the Electron version installed in the application. They keep source maps in development, skip minification by default, and do not copy a public directory. See the [compatibility table](./compatibility#runtime-derived-build-targets) for the current mapping.
 
 electron-vite-plus always externalizes:
 
@@ -75,3 +75,5 @@ Restarts are briefly debounced so a single source edit does not produce a burst 
 This preview is a runtime check of the compiled application. It is not an installer, signer, or distributable-package preview.
 
 `smoke` goes one step further: renderer code emits a readiness event after application initialization, preload forwards it over IPC, and main prints the marker observed by the CLI. A process that merely starts, crashes before loading preload, or never runs the renderer entry fails through its exit status or the readiness timeout.
+
+Use the [runtime validation guide](./runtime-validation) to choose the right command for local development and CI. When the output is ready to ship, continue with the separate [packaging and distribution](./packaging) stage.
