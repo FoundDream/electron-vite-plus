@@ -29,6 +29,8 @@ async function main(): Promise<void> {
       "skip-build": { type: "boolean" },
       timeout: { type: "string" },
       "log-level": { type: "string" },
+      "renderer-only": { type: "boolean" },
+      "debug-hmr": { type: "boolean" },
       help: { type: "boolean", short: "h" },
       version: { type: "boolean", short: "v" },
     },
@@ -104,6 +106,8 @@ async function main(): Promise<void> {
     ...common,
     ...(values.host ? { host: values.host } : {}),
     ...(port !== undefined ? { port } : {}),
+    ...(values["renderer-only"] ? { rendererOnly: true } : {}),
+    ...(values["debug-hmr"] ? { debugHmr: true } : {}),
     electronArgs,
   });
 }
@@ -130,6 +134,8 @@ Options:
       --out-dir <dir>       Set the base output directory
       --host <host>         Renderer dev-server host
       --port <port>         Renderer dev-server port
+      --renderer-only       Build main/preload once, then keep only renderer HMR active
+      --debug-hmr           Trace renderer HMR and Electron lifecycle timing
       --skip-build          Preview or smoke-test the existing build
       --timeout <ms>        Runtime smoke readiness timeout
       --log-level <level>   info | warn | error | silent

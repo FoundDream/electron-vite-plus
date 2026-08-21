@@ -10,6 +10,7 @@ export { previewApp } from "./preview.js";
 export { smokeApp } from "./smoke.js";
 export { diagnoseProject, printDoctorReport } from "./doctor.js";
 export type { DoctorReport, DoctorTarget } from "./doctor.js";
+export type { DevelopmentEvent, DevelopmentPhase, DevelopmentTarget } from "./dev-events.js";
 export { createTargetConfigs, loadElectronConfig } from "./config.js";
 export type * from "./types.js";
 

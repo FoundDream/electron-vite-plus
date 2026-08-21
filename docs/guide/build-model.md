@@ -58,7 +58,7 @@ The renderer base defaults to `./`, making its asset URLs suitable for Electron'
 
 ## Development lifecycle
 
-The `dev` command starts watched builds for main and preload, starts the renderer dev server, then launches the Electron executable installed by the application.
+The `dev` command starts persistent Vite+ build watchers for main and preload, starts the renderer dev server, then launches the Electron executable installed by the application.
 
 ```text
 main change     → rebuild main    → restart Electron
@@ -66,7 +66,11 @@ preload change  → rebuild preload → full renderer reload
 renderer change → Vite HMR        → update the web surface
 ```
 
-Restarts are briefly debounced so a single source edit does not produce a burst of Electron processes. On shutdown, electron-vite-plus closes file watchers, the dev server, and the Electron child process.
+Build completion is coordinated across process targets. If one shared file rebuilds both main and preload, electron-vite-plus waits for both outputs and performs one Electron restart instead of restarting and then reloading the same window. A failed target blocks the lifecycle action until it recovers, so Electron does not consume a partially updated output set.
+
+Use `electron-vite-plus dev --renderer-only` to build process targets once and keep only renderer HMR active. This avoids unrelated process work during a renderer-focused session, but process edits remain stale until normal dev mode is restarted.
+
+Use `electron-vite-plus dev --debug-hmr` to print the renderer path from file detection through client application, plus process build durations and lifecycle actions. On shutdown, electron-vite-plus closes recovery and native build watchers, the dev server, and the Electron child process.
 
 ## Production, preview, and smoke
 

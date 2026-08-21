@@ -20,8 +20,8 @@ The Alpha provides:
 
 - one `vite.config.ts` for Vite+ and Electron;
 - Vite+ builds for main, preload, and renderer;
-- renderer HMR;
-- main-process restart and preload reload during development;
+- observable renderer HMR with an optional renderer-only mode;
+- coordinated main-process restart and preload reload during development;
 - Electron-aware defaults for output formats and external dependencies;
 - Electron-aware asset imports and runtime-derived build targets;
 - `dev`, `build`, `preview`, `smoke`, and `doctor` commands that can be run through `vp run`.
@@ -147,7 +147,9 @@ electron-vite-plus doctor [root]
 ```
 
 Use `electron-vite-plus --help` for all options. `evp` is provided as a short
-alias.
+alias. During HMR diagnosis, run `electron-vite-plus dev --debug-hmr`. Use
+`--renderer-only` when main and preload should be built once and left untouched
+for a renderer-focused session.
 
 ## Current scope
 

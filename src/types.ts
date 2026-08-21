@@ -1,5 +1,6 @@
 import type { ConfigEnv, UserConfig } from "vite-plus";
 import type { ElectronProcessRunner, ElectronRunnerOptions } from "./electron.js";
+import type { DevelopmentEvent } from "./dev-events.js";
 
 export interface ExternalizeOptions {
   include?: string[];
@@ -55,6 +56,10 @@ export interface DevOptions extends CommonOptions {
   host?: string;
   port?: number;
   electronArgs?: string[];
+  /** Build process targets once, then keep only renderer HMR active. */
+  rendererOnly?: boolean;
+  /** Print renderer HMR and Electron lifecycle timing events. */
+  debugHmr?: boolean;
 }
 
 export interface DevServerHandle {
@@ -67,6 +72,7 @@ export interface DevServerHooks {
   createElectronRunner?: (options: ElectronRunnerOptions) => ElectronProcessRunner;
   onMainRestart?: () => void;
   onPreloadReload?: () => void;
+  onDevelopmentEvent?: (event: DevelopmentEvent) => void;
 }
 
 export interface PreviewOptions extends CommonOptions {

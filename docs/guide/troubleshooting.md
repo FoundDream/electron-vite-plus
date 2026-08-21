@@ -63,6 +63,33 @@ Generated applications include this value. See [process assets](./configuration#
 
 Native modules and the WebAssembly filesystem loader are not sandbox-compatible. Move those operations to main or use an explicitly unsandboxed preload after reviewing the security impact.
 
+## Renderer HMR feels delayed or reloads the whole page
+
+Run the direct command with tracing enabled:
+
+```bash
+electron-vite-plus dev --debug-hmr
+```
+
+A successful hot update normally reports this sequence:
+
+```text
+renderer:file-change
+renderer:hmr-send update
+renderer:hmr-before-update update
+renderer:hmr-after-update update <duration>
+```
+
+Use the last event reached to locate the boundary:
+
+- no `file-change`: check whether the edited file belongs to the renderer module graph and whether the project is on a filesystem with reliable watch events;
+- `file-change` without `hmr-send`: inspect renderer plugin errors and server logs;
+- `hmr-send` without a client event: check `hmr-client-ready` and `hmr-ws-disconnect`, the renderer URL, proxy rules, and WebSocket connectivity;
+- `hmr-before-full-reload`: Vite could not preserve the current module boundary; keep framework components in their own modules and avoid mixing incompatible exports with React Refresh boundaries;
+- `hmr-before-update` without `hmr-after-update`: inspect the renderer console for an exception while evaluating the replacement module.
+
+Edits to files imported by main or preload are process-target changes even when renderer code also imports them. The lifecycle coordinator waits for concurrent process builds and applies the strongest required action once. For a renderer-only work session, use `--renderer-only`; return to normal dev mode before testing process changes.
+
 ## A newer Electron major prints a fallback warning
 
 The build clamps to the latest validated runtime targets so early testing can continue. The fallback is not a promise of support. Keep the warning visible in CI and follow the validation steps in [compatibility](./compatibility#missing-or-newer-electron-versions).

@@ -23,7 +23,15 @@ Starts watched main and preload builds, the renderer dev server, and Electron. T
 ```bash
 electron-vite-plus dev
 electron-vite-plus ./apps/desktop --port 5174
+electron-vite-plus dev --debug-hmr
+electron-vite-plus dev --renderer-only
 ```
+
+Main and preload use persistent Vite+ build watchers. Concurrent rebuilds are coordinated so a shared-file change produces one Electron lifecycle action: a main restart takes precedence over a preload-only renderer reload.
+
+`--renderer-only` builds main and preload once before launch, then watches only the renderer. Use it while working exclusively on renderer code; changes to main or preload are intentionally ignored until the normal dev command is restarted.
+
+`--debug-hmr` prints structured renderer and process lifecycle events, including renderer file detection, server dispatch, client receipt/application, full reloads, WebSocket state, process-target build duration, reload, and restart.
 
 ### `build`
 
@@ -85,18 +93,20 @@ electron-vite-plus doctor
 
 ## Options
 
-| Option                | Commands       | Description                                |
-| --------------------- | -------------- | ------------------------------------------ |
-| `-c, --config <file>` | all            | Use a specific Vite config file.           |
-| `-m, --mode <mode>`   | all            | Set the Vite mode.                         |
-| `--out-dir <dir>`     | all            | Override the base output directory.        |
-| `--host <host>`       | dev            | Set the renderer dev-server host.          |
-| `--port <port>`       | dev            | Set the renderer dev-server port.          |
-| `--skip-build`        | preview, smoke | Reuse the existing production build.       |
-| `--timeout <ms>`      | smoke          | Set the readiness timeout in milliseconds. |
-| `--log-level <level>` | all            | Use `info`, `warn`, `error`, or `silent`.  |
-| `-h, --help`          | all            | Print usage information.                   |
-| `-v, --version`       | all            | Print the installed version.               |
+| Option                | Commands       | Description                                           |
+| --------------------- | -------------- | ----------------------------------------------------- |
+| `-c, --config <file>` | all            | Use a specific Vite config file.                      |
+| `-m, --mode <mode>`   | all            | Set the Vite mode.                                    |
+| `--out-dir <dir>`     | all            | Override the base output directory.                   |
+| `--host <host>`       | dev            | Set the renderer dev-server host.                     |
+| `--port <port>`       | dev            | Set the renderer dev-server port.                     |
+| `--renderer-only`     | dev            | Build process targets once, then watch renderer only. |
+| `--debug-hmr`         | dev            | Trace HMR and Electron lifecycle timing.              |
+| `--skip-build`        | preview, smoke | Reuse the existing production build.                  |
+| `--timeout <ms>`      | smoke          | Set the readiness timeout in milliseconds.            |
+| `--log-level <level>` | all            | Use `info`, `warn`, `error`, or `silent`.             |
+| `-h, --help`          | all            | Print usage information.                              |
+| `-v, --version`       | all            | Print the installed version.                          |
 
 ## Pass arguments to Electron
 

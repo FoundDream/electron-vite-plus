@@ -47,6 +47,8 @@ console.log(server.rendererUrl);
 await server.close();
 ```
 
+`DevOptions.rendererOnly` builds main and preload once and then keeps only renderer HMR active. `DevOptions.debugHmr` prints structured development events. Advanced integrations can receive the same `DevelopmentEvent` stream through `DevServerHooks.onDevelopmentEvent`; the exported event types distinguish renderer detection, server dispatch, client application, process builds, reloads, and restarts.
+
 Advanced integrations can provide hooks for custom Electron process creation and main/preload rebuild notifications.
 
 ## `previewApp(options?)`

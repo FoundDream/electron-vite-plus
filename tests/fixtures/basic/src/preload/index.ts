@@ -15,3 +15,8 @@ if (process.env.ELECTRON_VITE_PLUS_SMOKE === "1") {
     { once: true },
   );
 }
+if (process.env.ELECTRON_VITE_PLUS_HMR_TEST === "1") {
+  window.addEventListener("electron-vite-plus:hmr-marker", (event) => {
+    ipcRenderer.send("electron-vite-plus:hmr-marker", (event as CustomEvent).detail);
+  });
+}

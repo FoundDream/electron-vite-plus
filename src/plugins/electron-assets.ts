@@ -47,6 +47,7 @@ export function electronAssetPlugin(options: ElectronAssetPluginOptions): Plugin
       const isWasmLoader = filename.endsWith(".wasm") && params.has("loader");
       if (!isAsset && !isNativeModule && !isWasmLoader) return;
 
+      this.addWatchFile(filename);
       const placeholder = `__EVP_NODE_ASSET_${nextPlaceholderId++}__`;
       if (options.publicDir && isInside(options.publicDir, filename)) {
         publicAssets.push({ placeholder, filename });

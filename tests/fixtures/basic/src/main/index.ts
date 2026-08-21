@@ -13,12 +13,18 @@ if (process.env.ELECTRON_VITE_PLUS_SMOKE === "1") {
     console.log("EVP_SMOKE_READY");
   });
 }
+if (process.env.ELECTRON_VITE_PLUS_HMR_TEST === "1") {
+  ipcMain.on("electron-vite-plus:hmr-marker", (_event, marker: unknown) => {
+    console.log(`EVP_HMR_MARKER ${String(marker)}`);
+  });
+}
 
 async function createWindow(): Promise<void> {
+  const hideWindow = process.env.ELECTRON_VITE_PLUS_HMR_TEST === "1";
   const window = new BrowserWindow({
     width: 900,
     height: 640,
-    show: false,
+    show: !hideWindow,
     webPreferences: {
       contextIsolation: true,
       sandbox: true,
@@ -32,7 +38,7 @@ async function createWindow(): Promise<void> {
   } else {
     await window.loadFile(path.join(import.meta.dirname, "../renderer/index.html"));
   }
-  window.show();
+  if (!hideWindow) window.show();
 }
 
 void app.whenReady().then(async () => {
