@@ -54,9 +54,9 @@ hero:
 
 <aside class="release-rail" aria-label="Current release">
   <div>
-    <span class="release-rail__version">0.1.0-alpha.1</span>
-    <strong>Runtime confidence release</strong>
-    <p>Signal-safe preview, an explicit smoke handshake, stronger diagnostics, and sandbox-compatible preload assets.</p>
+    <span class="release-rail__version">0.1.0-alpha.2</span>
+    <strong>Responsive HMR release</strong>
+    <p>Persistent process watchers, coordinated reloads, renderer-only mode, and observable HMR timing.</p>
   </div>
   <a href="https://github.com/FoundDream/electron-vite-plus/blob/main/CHANGELOG.md">Read the release notes <span>↗</span></a>
 </aside>

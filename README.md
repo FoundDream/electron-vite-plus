@@ -106,7 +106,7 @@ Add scripts to the Electron application's `package.json`:
   },
   "devDependencies": {
     "electron": "^43.4.0",
-    "electron-vite-plus": "0.1.0-alpha.1",
+    "electron-vite-plus": "0.1.0-alpha.2",
     "vite-plus": "0.2.9",
     "vite": "npm:@voidzero-dev/vite-plus-core@0.2.9"
   },

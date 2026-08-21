@@ -3,7 +3,7 @@
 electron-vite-plus connects Electron's three execution environments to the Vite+ toolchain. The fastest path is to scaffold an application, install it with Vite+, and start the development loop.
 
 ::: warning Alpha software
-Version `0.1.0-alpha.1` is intended for early testing. Pin versions in real projects and review the [current scope](./alpha-scope) before adopting it.
+Version `0.1.0-alpha.2` is intended for early testing. Pin versions in real projects and review the [current scope](./alpha-scope) before adopting it.
 :::
 
 ## Prerequisites
