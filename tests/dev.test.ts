@@ -186,19 +186,38 @@ describe("electron-vite-plus dev server", () => {
           15_000,
         );
         await waitFor(() => electronOutput.includes("EVP_HMR_MARKER initial"), 15_000);
+        await delay(100);
         const rendererFile = path.join(fixtureRoot, "src/renderer/src.ts");
         const source = readFileSync(rendererFile, "utf8");
         writeFileSync(
           rendererFile,
-          source.replace('hmrMarker = "initial"', 'hmrMarker = "updated"'),
+          `${source.replace('hmrMarker = "initial"', 'hmrMarker = "updated"')}\n// HMR test update\n`,
         );
 
+        await waitFor(
+          () =>
+            events.some((event) => event.target === "renderer" && event.phase === "file-change"),
+          15_000,
+          "renderer file change",
+        );
+        await waitFor(
+          () =>
+            events.some(
+              (event) =>
+                event.target === "renderer" &&
+                event.phase === "hmr-send" &&
+                event.kind === "update",
+            ),
+          15_000,
+          "renderer HMR send",
+        );
         await waitFor(
           () =>
             events.some(
               (event) => event.target === "renderer" && event.phase === "hmr-after-update",
             ),
           15_000,
+          "renderer HMR apply",
         );
         expect(
           events.some(
@@ -246,10 +265,14 @@ describe("electron-vite-plus dev server", () => {
   });
 });
 
-async function waitFor(predicate: () => boolean, timeout = 10_000): Promise<void> {
+async function waitFor(
+  predicate: () => boolean,
+  timeout = 10_000,
+  description = "development rebuild",
+): Promise<void> {
   const deadline = Date.now() + timeout;
   while (!predicate()) {
-    if (Date.now() > deadline) throw new Error("Timed out waiting for development rebuild");
+    if (Date.now() > deadline) throw new Error(`Timed out waiting for ${description}`);
     await delay(25);
   }
 }
