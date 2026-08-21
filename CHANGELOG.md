@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.1.0-alpha.2
+
+- Keep main and preload development builds in persistent watch contexts for faster, recoverable rebuilds.
+- Coordinate main restarts and preload-triggered renderer reloads without overlapping lifecycle work.
+- Add renderer-only development mode and opt-in HMR lifecycle timing diagnostics.
+- Expose development lifecycle events for integrations and verify renderer HMR through a real Electron client.
+- Preserve imported asset watching across main and preload rebuilds.
+
 ## 0.1.0-alpha.1
 
 - Return a non-zero status and report the terminating signal when Electron exits abnormally during `preview`.

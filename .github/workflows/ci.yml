@@ -39,7 +39,14 @@ jobs:
 
       - run: npm ci
       - run: npm run check
-      - run: npm test
+
+      - name: Run tests with a virtual display
+        if: runner.os == 'Linux'
+        run: xvfb-run --auto-servernum npm test
+
+      - name: Run tests
+        if: runner.os != 'Linux'
+        run: npm test
 
       # Vite+ pack currently uses Promise.withResolvers, which is unavailable in Node 20.
       - name: Build packages

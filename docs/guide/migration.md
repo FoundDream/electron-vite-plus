@@ -9,7 +9,7 @@ Pin the Alpha packages together. Vite plugins still request the `vite` package n
 ```json
 {
   "devDependencies": {
-    "electron-vite-plus": "0.1.0-alpha.1",
+    "electron-vite-plus": "0.1.0-alpha.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@0.2.9",
     "vite-plus": "0.2.9"
   },
