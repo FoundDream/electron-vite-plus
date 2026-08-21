@@ -156,7 +156,8 @@ describe("electron-vite-plus dev server", () => {
             const realRunner = new ElectronRunner({
               ...options,
               executablePath: electronPath,
-              stdio: ["ignore", "pipe", "ignore"],
+              stdio: ["ignore", "pipe", "pipe"],
+              ...(process.platform === "linux" ? { args: ["--no-sandbox"] } : {}),
               env: {
                 ...options.env,
                 ELECTRON_VITE_PLUS_HMR_TEST: "1",
@@ -166,6 +167,9 @@ describe("electron-vite-plus dev server", () => {
               start() {
                 const child = realRunner.start();
                 child.stdout?.on("data", (chunk: Buffer) => {
+                  electronOutput += chunk.toString();
+                });
+                child.stderr?.on("data", (chunk: Buffer) => {
                   electronOutput += chunk.toString();
                 });
               },
