@@ -23,7 +23,7 @@ jobs:
 
       - run: npm ci
       - run: npm run check
-      - run: npm test
+      - run: xvfb-run --auto-servernum npm test
       - run: npm run build:all
       - run: npm run verify:release
       - run: npm pack --dry-run --json
